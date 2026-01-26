@@ -16,5 +16,7 @@ MonoBehaviour:
   damage: 20
   magazineSize: 5
   fireRate: 3
+  fireMode: 0
   canZoom: 1
   zoomFOV: 12
+  shootSound: {fileID: 8300000, guid: 7f1248e89c95eeb48add3916619a1ebf, type: 3}

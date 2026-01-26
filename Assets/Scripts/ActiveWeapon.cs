@@ -41,14 +41,36 @@ public class ActiveWeapon : MonoBehaviour
 
     private void HandleShoot()
     {
-        if (Input.GetKey(KeyCode.Mouse0) && currentAmmo > 0)
+        if (weaponSO.fireMode == FireMode.SemiAuto)
         {
-            if (initTime >= weaponSO.fireRate)
+            if (Input.GetKeyDown(KeyCode.Mouse0) && currentAmmo > 0)
             {
-                currentWeapon.Shoot(weaponSO);
-                ChangeAmmo(-1);
-                initTime = 0;
+                if (initTime >= weaponSO.fireRate)
+                {
+                    currentWeapon.StartFiring(weaponSO);
+                    currentWeapon.Shoot(weaponSO);
+                    ChangeAmmo(-1);
+                    initTime = 0;
+                }
             }
+        }
+        else if (weaponSO.fireMode == FireMode.FullAuto)
+        {
+            if (Input.GetKey(KeyCode.Mouse0) && currentAmmo > 0)
+            {
+                if (initTime >= weaponSO.fireRate)
+                {
+                    currentWeapon.StartFiring(weaponSO);
+                    currentWeapon.Shoot(weaponSO);
+                    ChangeAmmo(-1);
+                    initTime = 0;
+                }
+            }
+        }
+
+        if (Input.GetKeyUp(KeyCode.Mouse0))
+        {
+            currentWeapon.StopFiring();
         }
     }
 

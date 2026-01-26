@@ -19,19 +19,28 @@ public class Robot : MonoBehaviour
     private void Start()
     {
         ph = FindFirstObjectByType<PlayerHealth>();
+        if (ph != null)
+        {
+            target = ph.gameObject;
+        }
     }
 
     private void Update()
     {
+        if (ph == null || ph.IsDead || target == null)
+        {
+            agent.isStopped = true;
+            return;
+        }
+        agent.isStopped = false;
         agent.SetDestination(target.transform.position);
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.CompareTag(PLAYER_TAG)) 
-        {
-            ph.TakeDamage(4);
-            eh.SelfDestroy();
-        }
+        if (!other.CompareTag(PLAYER_TAG)) return;
+        if (ph == null || ph.IsDead) return;
+        ph.TakeDamage(4);
+        eh.SelfDestroy();
     }
 }
