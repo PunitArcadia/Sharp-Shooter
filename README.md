@@ -1,25 +1,24 @@
-# Galaxy Strike
+# Sharp Shooter
 
-A top-down space shooter prototype built in **Unity**, focusing on core combat mechanics and arcade-style gameplay.
+A shooting mechanics prototype built in **Unity**, focusing on aiming, input handling, and hit detection.
 
-This project was built as part of my learning journey to understand shooting mechanics, enemy interactions, and gameplay loops.
+This project was created to understand the fundamentals of shooting systems and player feedback.
 
 ---
 
 ## 🎮 Gameplay Overview
-- Player-controlled spaceship movement
-- Shooting projectiles to destroy enemies
-- Enemy spawning and basic behaviors
-- Score-based progression
+- Player aiming mechanics
+- Shooting input handling
+- Target hit detection
+- Simple scoring or interaction feedback
 
 ---
 
 ## 🧠 What I Learned
-- Implementing player shooting mechanics
-- Enemy spawning and management
-- Collision-based damage handling
-- Core combat gameplay loops
-- Managing simple progression logic
+- Handling player input for aiming and shooting
+- Raycasts and hit detection
+- Cause-and-effect gameplay feedback
+- Structuring simple interaction logic
 
 ---
 
@@ -30,12 +29,12 @@ This project was built as part of my learning journey to understand shooting mec
 ---
 
 ## 📌 Project Purpose
-This project focuses on **combat fundamentals** and **arcade gameplay loops**, and serves as a prototype rather than a fully polished game.
+This project serves as a **mechanics-focused prototype** to explore shooting and aiming systems.
 
 ---
 
 ## 🚀 Possible Improvements
-- Modular weapon system
-- Improved enemy AI behaviors
-- Better separation of gameplay systems
-- Visual and audio feedback polish
+- Weapon modularity
+- Visual and audio feedback improvements
+- Cleaner architecture for shooting systems
+- Expandable target behaviors
