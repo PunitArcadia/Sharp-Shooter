@@ -41,6 +41,6 @@ public class Robot : MonoBehaviour
         if (!other.CompareTag(PLAYER_TAG)) return;
         if (ph == null || ph.IsDead) return;
         ph.TakeDamage(4);
-        eh.SelfDestroy();
+        eh.TakeDamage(int.MaxValue);
     }
 }

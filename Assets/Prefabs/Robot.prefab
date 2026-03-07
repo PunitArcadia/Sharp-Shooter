@@ -196,9 +196,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7c037f2fa13eaa94e924e23b41efa9ea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  health: 3
+  maxHealth: 3
   explosionFX: {fileID: 5173511069662866607, guid: fdecfc3ea4232dc4fbbdd0cf7327ce21, type: 3}
   explosionOffset: {x: 0, y: 1, z: 0}
+  deathSound: {fileID: 8300000, guid: 31187089a09c39c4584331217efb8680, type: 3}
 --- !u!135 &825718357944296201
 SphereCollider:
   m_ObjectHideFlags: 0

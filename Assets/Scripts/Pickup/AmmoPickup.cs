@@ -6,6 +6,10 @@ public class AmmoPickup : Pickup
 
     protected override void OnPickup(ActiveWeapon activeWeapon)
     {
-        activeWeapon.ChangeAmmo(ammo);
+        Weapon weapon = activeWeapon.GetCurrentWeapon();
+        if (weapon != null)
+        {
+            weapon.AddAmmo(ammo);
+        }
     }
 }

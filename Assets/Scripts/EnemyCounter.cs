@@ -2,18 +2,29 @@ using UnityEngine;
 
 public class EnemyCounter : MonoBehaviour
 {
-    private static int enemyCount = 0;
+    private int totalEnemies;
+    private int killedEnemies;
 
-    void OnEnable()
+    private void Start()
     {
-        enemyCount++;
+        totalEnemies = FindObjectsByType<EnemyHealth>(FindObjectsSortMode.None).Length;
     }
 
-    void OnDestroy()
+    private void OnEnable()
     {
-        enemyCount--;
+        EnemyEvents.OnEnemyKilled += HandleEnemyKilled;
+    }
 
-        if (enemyCount <= 0)
+    private void OnDisable()
+    {
+        EnemyEvents.OnEnemyKilled -= HandleEnemyKilled;
+    }
+
+    private void HandleEnemyKilled()
+    {
+        killedEnemies++;
+
+        if (killedEnemies >= totalEnemies)
         {
             GameManager.Instance.PlayerWon();
         }
