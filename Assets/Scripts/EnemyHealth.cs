@@ -1,39 +1,52 @@
 using UnityEngine;
 
-public class EnemyHealth : MonoBehaviour
+public class EnemyHealth : MonoBehaviour, IDamageable
 {
-    [SerializeField] int health = 3;
-    [SerializeField] GameObject explosionFX;
-    [SerializeField] Vector3 explosionOffset;
-    AudioSource audioSource;
+    [Header("Health")]
+    [SerializeField] private int maxHealth = 3;
 
-    void Awake()
-    {
-        audioSource = GetComponent<AudioSource>();
-    }
+    [Header("Effects")]
+    [SerializeField] private GameObject explosionFX;
+    [SerializeField] private Vector3 explosionOffset;
+    [SerializeField] private AudioClip deathSound;
 
-    private void Update()
+    private int currentHealth;
+    private bool isDead;
+
+    private void Awake()
     {
-        if (health <= 0)
-        {
-            SelfDestroy();
-        }
+        currentHealth = maxHealth;
     }
 
     public void TakeDamage(int damage)
     {
-        health -= damage;
+        if (isDead) return;
+        currentHealth -= damage;
+        if (currentHealth <= 0)
+        {
+            Die();
+        }
     }
 
-    public void SelfDestroy()
+    private void Die()
     {
-        //Destroying self Stuff
-        AudioSource.PlayClipAtPoint(
-            audioSource.clip,
-            transform.position,
-            audioSource.volume
-        );
-        Instantiate(explosionFX, transform.position + explosionOffset, Quaternion.identity);
+        isDead = true;
+        if (deathSound != null)
+        {
+            AudioSource.PlayClipAtPoint(
+                deathSound,
+                transform.position
+            );
+        }
+        if (explosionFX != null)
+        {
+            Instantiate(
+                explosionFX,
+                transform.position + explosionOffset,
+                Quaternion.identity
+            );
+        }
+        EnemyEvents.OnEnemyKilled?.Invoke();
         Destroy(gameObject);
     }
 }

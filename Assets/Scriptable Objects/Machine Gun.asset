@@ -15,8 +15,9 @@ MonoBehaviour:
   weaponPrefab: {fileID: 5105029209556502175, guid: 4c4aea828bfb10e47866f138a037fe6a, type: 3}
   damage: 5
   magazineSize: 50
-  fireRate: 0.2
+  fireRate: 12
   fireMode: 1
   canZoom: 0
   zoomFOV: 0
   shootSound: {fileID: 8300000, guid: ddaeb081feae86a45a38fc21d1303990, type: 3}
+  reserveAmmo: 90

@@ -2,114 +2,126 @@ using Cinemachine;
 using StarterAssets;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ActiveWeapon : MonoBehaviour
 {
-    [SerializeField] WeaponSO startingWeapon;
-    [SerializeField] WeaponSO weaponSO;
-    [SerializeField] GameObject zoomEffect;
-    [SerializeField] float zoomSens;
-    [SerializeField] TMP_Text currentAmmoUI;
-    [SerializeField] TMP_Text totalAmmoUI;
+    [Header("Starting Weapon")]
+    [SerializeField] private WeaponSO startingWeapon;
 
-    Weapon currentWeapon;
-    CinemachineVirtualCamera virtualCamera;
-    FirstPersonController fpc;
+    [Header("Zoom")]
+    [SerializeField] private GameObject zoomEffect;
+    [SerializeField] private float zoomSensitivity = 0.5f;
 
-    float initTime;
-    float defaultFOV;
-    float defaultZoomSens;
-    int currentAmmo;
+    [Header("UI")]
+    [SerializeField] private TMP_Text currentAmmoUI;
+    [SerializeField] private TMP_Text totalAmmoUI;
+    [SerializeField] private TMP_Text weaponNameUI;
+
+    private Weapon currentWeapon;
+    private WeaponSO currentWeaponData;
+
+    private CinemachineVirtualCamera virtualCamera;
+    private FirstPersonController firstPersonController;
+
+    private float defaultFOV;
+    private float defaultSensitivity = 1f;
 
     private void Start()
     {
-        currentWeapon = FindFirstObjectByType<Weapon>();
-        SwitchWeapon(startingWeapon);
         virtualCamera = FindFirstObjectByType<CinemachineVirtualCamera>();
-        fpc = FindFirstObjectByType<FirstPersonController>();
-        initTime = 10;
+        firstPersonController = FindFirstObjectByType<FirstPersonController>();
+
         defaultFOV = virtualCamera.m_Lens.FieldOfView;
-        defaultZoomSens = 1;
-    }
-    private void Update()
-    {
-        initTime += Time.deltaTime;
-        HandleShoot();
-        HandleZoom();
+
+        SwitchWeapon(startingWeapon);
     }
 
-    private void HandleShoot()
+    private void Update()
     {
-        if (weaponSO.fireMode == FireMode.SemiAuto)
+        HandleInput();
+        HandleZoom();
+        UpdateAmmoUI();
+    }
+
+    private void HandleInput()
+    {
+        if (Input.GetKeyDown(KeyCode.Mouse0))
         {
-            if (Input.GetKeyDown(KeyCode.Mouse0) && currentAmmo > 0)
-            {
-                if (initTime >= weaponSO.fireRate)
-                {
-                    currentWeapon.StartFiring(weaponSO);
-                    currentWeapon.Shoot(weaponSO);
-                    ChangeAmmo(-1);
-                    initTime = 0;
-                }
-            }
+            currentWeapon.StartFiring();
         }
-        else if (weaponSO.fireMode == FireMode.FullAuto)
+
+        if (Input.GetKey(KeyCode.Mouse0))
         {
-            if (Input.GetKey(KeyCode.Mouse0) && currentAmmo > 0)
-            {
-                if (initTime >= weaponSO.fireRate)
-                {
-                    currentWeapon.StartFiring(weaponSO);
-                    currentWeapon.Shoot(weaponSO);
-                    ChangeAmmo(-1);
-                    initTime = 0;
-                }
-            }
+            currentWeapon.Shoot();
         }
 
         if (Input.GetKeyUp(KeyCode.Mouse0))
         {
             currentWeapon.StopFiring();
         }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            currentWeapon.Reload();
+        }
     }
 
     private void HandleZoom()
     {
-        if (!weaponSO.canZoom) return;
-        if (Input.GetKey(KeyCode.Mouse1)) 
+        if (currentWeaponData == null) return;
+        if (!currentWeaponData.canZoom) return;
+
+        if (Input.GetKey(KeyCode.Mouse1))
         {
-            virtualCamera.m_Lens.FieldOfView = weaponSO.zoomFOV;
+            virtualCamera.m_Lens.FieldOfView = currentWeaponData.zoomFOV;
             zoomEffect.SetActive(true);
-            fpc.ChangeSens(zoomSens);
+            firstPersonController.ChangeSens(zoomSensitivity);
         }
         else
         {
             virtualCamera.m_Lens.FieldOfView = defaultFOV;
             zoomEffect.SetActive(false);
-            fpc.ChangeSens(defaultZoomSens);
+            firstPersonController.ChangeSens(defaultSensitivity);
         }
     }
 
-    public void SwitchWeapon(WeaponSO weaponSO)
+    public void SwitchWeapon(WeaponSO weaponData)
     {
-        Debug.Log("Weapon Changed! " +  weaponSO.name);
-
-        if(currentWeapon)
+        Debug.Log("Weapon switched to: " + weaponData.name);
+        if (currentWeapon)
         {
+            Debug.Log("Destroyed weapon:" +  currentWeapon.name);
             Destroy(currentWeapon.gameObject);
         }
-        totalAmmoUI.text = weaponSO.magazineSize.ToString("D2");
-        currentAmmo = weaponSO.magazineSize;
-        currentAmmoUI.text = weaponSO.magazineSize.ToString("D2");
-        Weapon NewWeapon = Instantiate(weaponSO.weaponPrefab, transform).GetComponent<Weapon>();
-        currentWeapon = NewWeapon;
-        this.weaponSO = weaponSO;
+
+        currentWeaponData = weaponData;
+
+        Debug.Log("Current weapon data:" + currentWeaponData.name);
+
+        GameObject newWeaponObject =
+            Instantiate(weaponData.weaponPrefab, transform);
+
+        Debug.Log("new weapon object:" + newWeaponObject);
+
+        currentWeapon = newWeaponObject.GetComponent<Weapon>();
+        Debug.Log("currentWeapon:" + currentWeapon);
+
+        currentWeapon.Initialize(weaponData);
+        Debug.Log("currentWeapon after initialization:" + currentWeapon);
     }
 
-    public void ChangeAmmo(int amount)
+    private void UpdateAmmoUI()
     {
-        currentAmmo += amount;
-        currentAmmoUI.text = currentAmmo.ToString("D2");
+        if (currentWeapon == null) return;
+
+        currentAmmoUI.text =
+            currentWeapon.GetCurrentAmmo().ToString("D2");
+
+        totalAmmoUI.text =
+            currentWeapon.GetReserveAmmo().ToString("D2");
+    }
+    public Weapon GetCurrentWeapon()
+    {
+        return currentWeapon;
     }
 }

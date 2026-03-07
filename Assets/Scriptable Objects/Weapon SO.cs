@@ -17,4 +17,5 @@ public class WeaponSO : ScriptableObject
     public bool canZoom;
     public float zoomFOV;
     public AudioClip shootSound;
+    public int reserveAmmo = 90;
 }
